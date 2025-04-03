@@ -44,9 +44,11 @@ namespace GifMakerApp
         // Resource 폴더에 있는 파일들을 긁어오는 메서드
         private void LoadResource()
         {
-            spritesDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\Resources");   // Resources 폴더의 위치 추적
-            spritesPaths = Directory.GetFiles(spritesDir);                                          // 해당 폴더 안에 있는 파일들의 위치 저장
-            imgSprites = new Bitmap[spritesPaths.Length];                                           // 파일의 개수만큼 이미지 배열 길이 초기화
+            spritesDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources");                       // Resources 폴더의 위치 추적
+            spritesPaths = Directory.GetFiles(spritesDir)                                                               // 폴더 안에 있는 파일들의 위치 저장
+                        .OrderBy(file => int.Parse(Path.GetFileNameWithoutExtension(file).Replace("Resource ", "")))    // 파일명에서 "Resources"을 제외한 숫자 순으로 정렬
+                        .ToArray();
+            imgSprites = new Bitmap[spritesPaths.Length];                                                               // 파일의 개수만큼 이미지 배열 길이 초기화
 
             // 이미지 배열에 이미지 초기화
             for (int i = 0; i < imgSprites.Length; i++)
@@ -59,8 +61,8 @@ namespace GifMakerApp
         private void SetBorderColor()
         {
             // borderColor 딕셔너리 값 초기화
-            borderColor.Add(1, new Pen(Color.Blue, 7.5f));
-            borderColor.Add(2, new Pen(Color.Red, 7.5f));
+            borderColor.Add(1, new Pen(Color.Red, 7.5f));
+            borderColor.Add(2, new Pen(Color.Blue, 7.5f));
         }
 
         // 기본적인 화면 세팅을 담당하는 메서드
@@ -175,7 +177,7 @@ namespace GifMakerApp
                 // 이미지 개수만큼 반복
                 for (curFrameCnt = 0; curFrameCnt < imgSprites.Length; curFrameCnt++)
                 {
-                    await Task.Delay(100);                      // 100ms 대기
+                    await Task.Delay(50);                       // 50ms 대기
                     mainFrame.Image = imgSprites[curFrameCnt];  // 다음 이미지 적용
                 }
             }
